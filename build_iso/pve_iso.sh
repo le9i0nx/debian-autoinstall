@@ -1,4 +1,5 @@
 #!/bin/sh
+cd /tmp
 mkdir iso
 cd iso
 wget -O linux -c "http://ftp.debian.org/debian/dists/stable/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux"
