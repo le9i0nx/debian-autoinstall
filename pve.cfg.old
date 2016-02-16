@@ -1,3 +1,4 @@
+
 d-i preseed/include string default.cfg
 
 # http://www.claudioborges.org/?p=733
@@ -58,102 +59,77 @@ d-i partman/early_command string \
     else \
         SPARE_DEV=""; \
     fi; \
-    MEM=$(($(sed -n 's/^MemTotal: \+\([0-9]*\) kB/\1/p' /proc/meminfo) / 1024)); \
-    if [ "${MEM}" -lt "2048" ]; then \
-        SWAP=$((MEM * 2)); \
-    elif [ "${MEM}" -gt "2048" ] || [ "${MEM}" -le "8192" ]; then \
-        SWAP=${MEM}; \
-    elif [ "${MEM}" -ge "8192" ]; then \
-        SWAP=4096; \
-    fi; \
     debconf-set partman-auto/disk "$DISKS"; \
     if [ "${RAID}" -ge "1" ]; then \
         debconf-set partman-auto/method "raid"; \
+        echo "recipe = ${RAID} ${COUNT} ${SPARE} lvm - ${DEVS} ${SPARE_DEV} ." >> /var/log/syslog; \
         debconf-set partman-auto-raid/recipe "${RAID} ${COUNT} ${SPARE} lvm - ${DEVS} ${SPARE_DEV} ."; \
-        debconf-set partman-auto/expert_recipe "multiraid :: \
-            0 0 0 raid \
-                \$lvmignore{ } \
-                \$primary { } \
-                method{ raid } . \
-            256 256 ${SWAP} linux-swap \
-                \$defaultignore{ } \
-                \$lvmok{ } \
-                lv_name{ lv_swap } \
-                method{ swap } \
-                format{ } . \
-            512 40960 15360 ext4 \
-                \$defaultignore{ } \
-                \$lvmok{ } \
-                lv_name{ lv_root } \
-                method{ format } \
-                format{ } \
-                use_filesystem{ } \
-                filesystem{ ext4 } \
-                mountpoint{ / } . \
-            256 5120 4096 ext4 \
-                \$defaultignore{ } \
-                \$lvmok{ } \
-                lv_name{ lv_tmp } \
-                method{ format } \
-                format{ } \
-                use_filesystem{ } \
-                filesystem{ ext4 } \
-                mountpoint{ /tmp } . \
-            512 40960 15360 ext4 \
-                \$defaultignore{ } \
-                \$lvmok{ } \
-                lv_name{ lv_var } \
-                method{ format } \
-                format{ } \
-                use_filesystem{ } \
-                filesystem{ ext4 } \
-                mountpoint{ /var } . \
-            1024 1024 1024 ext4 \
-                \$defaultignore{ } \
-                \$lvmok{ } \
-                lv_name{ lv_delete } ."; \
+        RAID_PARTION=" \
+            0 0 0 raid              \
+                \$lvmignore{ }      \
+                \$primary { }       \
+                method{ raid }      \
+            ."; \
+        RECIPE_LABLE="multiraid"; \
     else \
         debconf-set partman-auto/method "lvm"; \
-        debconf-set partman-auto/expert_recipe "root :: \
-            256 256 ${SWAP} linux-swap \
-                \$defaultignore{ } \
-                \$lvmok{ } \
-                lv_name{ lv_swap } \
-                method{ swap } \
-                format{ } . \
-            512 40960 15360 ext4 \
-                \$defaultignore{ } \
-                \$lvmok{ } \
-                lv_name{ lv_root } \
-                method{ format } \
-                format{ } \
-                use_filesystem{ } \
-                filesystem{ ext4 } \
-                mountpoint{ / } . \
-            256 5120 4096 ext4 \
-                \$defaultignore{ } \
-                \$lvmok{ } \
-                lv_name{ lv_tmp } \
-                method{ format } \
-                format{ } \
-                use_filesystem{ } \
-                filesystem{ ext4 } \
-                mountpoint{ /tmp } . \
-            512 40960 15360 ext4 \
-                \$defaultignore{ } \
-                \$lvmok{ } \
-                lv_name{ lv_var } \
-                method{ format } \
-                format{ } \
-                use_filesystem{ } \
-                filesystem{ ext4 } \
-                mountpoint{ /var } . \
-            1024 1024 1024 ext4 \
-                \$defaultignore{ } \
-                \$lvmok{ } \
-                lv_name{ lv_delete } ."; \
-    fi; \
+        RAID_PARTION=""; \
+        RECIPE_LABLE="root"; \
+    fi ; \
+    DISKS_PARTION="${RECIPE_LABLE} :: \
+        ${RAID_PARTION}                     \
+        2048 40960 2048 ext4                \
+            \$default ignore{ }             \
+            \$lvmok{ }                      \
+            lv_name{ root }                 \
+            method{ format }                \
+            format{ }                       \
+            use_filesystem{ }               \
+            filesystem{ ext4 }              \
+            mountpoint{ / }                 \
+        .                                   \
+        2048 50 2048 ext4                   \
+            \$defaultignore{ }              \
+            \$lvmok{ }                      \
+            lv_name{ var }                  \
+            method{ format }                \
+            format{ }                       \
+            use_filesystem{ }               \
+            filesystem{ ext4 }              \
+            mountpoint{ /var }              \
+            options/nosuid{ nosuid }        \
+            options/nodev{ nodev }          \
+        .                                   \
+        512 50 512 ext4                     \
+            \$defaultignore{ }              \
+            \$lvmok{ }                      \
+            lv_name{ var+log }              \
+            method{ format }                \
+            format{  }                      \
+            use_filesystem{ }               \
+            filesystem{ ext4 }              \
+            mountpoint{ /var/log }          \
+            options/nosuid{ nosuid }        \
+            options/nodev{ nodev }          \
+            options/noexec{ noexec }        \
+        .                                   \
+        512 1 512 ext4                      \
+            \$defaultignore{ }              \
+            \$lvmok{ }                      \
+            lv_name{ var_lib_vz }           \
+            method{ format }                \
+            format{  }                      \
+            use_filesystem{ }               \
+            filesystem{ ext4 }              \
+            mountpoint{ /var/lib/vz }       \
+            options/nosuid{ nosuid }        \
+            options/nodev{ nodev }          \
+            options/noexec{ noexec }        \
+        ."; \
+    debconf-set partman-auto/expert_recipe "${DISKS_PARTION}"; \
     debconf-set grub-installer/bootdev "$DISKS"; \
+    echo "DISKS_PARTION = $DISKS_PARTION" >> /var/log/syslog; \
+    echo "RAID_PARTION = $RAID_PARTION" >> /var/log/syslog; \
     echo "DISKS = $DISKS" >> /var/log/syslog
 
 
@@ -167,7 +143,7 @@ d-i grub-installer/bootdev string default
 d-i partman-auto-lvm/no_boot boolean true
 
 # Name of the volume group for the new system
-d-i partman-auto-lvm/new_vg_name string VolGroup00
+d-i partman-auto-lvm/new_vg_name string vg_sys
 
 # Remove existing software RAID partitions?
 d-i partman-md/device_remove_md boolean true
@@ -197,5 +173,5 @@ d-i partman/confirm_nooverwrite boolean true
 d-i partman/choose_partition select finish
 
 # This command is run just before the install finishes, and it will remove the lv_delete
-d-i preseed/late_command string lvremove -f /dev/VolGroup00/lv_delete > /dev/null 2>&1
+d-i preseed/late_command string lvremove -f /dev/vg_sys/lv_delete > /dev/null 2>&1
 
