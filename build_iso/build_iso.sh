@@ -1,10 +1,12 @@
 #!/bin/sh
-cd /tmp
-mkdir iso
-cd iso
-wget -O linux -c "http://ftp.debian.org/debian/dists/stable/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux"
-wget -O initrd.gz -c "http://ftp.debian.org/debian/dists/stable/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz"
-wget -O isolinux.bin -c "http://mirror.centos.org/centos/7/os/x86_64/isolinux/isolinux.bin"
+mkdir -p /tmp/iso
+cd /tmp/iso
+[ -f linux ] || wget "http://ftp.debian.org/debian/dists/stable/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux"
+[ -f initrd.gz ] || wget "http://ftp.debian.org/debian/dists/stable/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz"
+[ -f initrd.gz.orig ] || cp -p initrd.gz initrd.gz.orig
+[ -f firmware.cpio.gz ] || wget "http://cdimage.debian.org/cdimage/unofficial/non-free/firmware/stable/current/firmware.cpio.gz"
+cat initrd.gz.orig firmware.cpio.gz > initrd.gz
+[ -f isolinux.bin ] || wget "http://mirror.centos.org/centos/7/os/x86_64/isolinux/isolinux.bin"
 
 cat > isolinux.cfg << EOF
 prompt 0
