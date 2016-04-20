@@ -1,4 +1,7 @@
 #!/bin/sh
+ROOT_PATH=$(cd $(dirname $0) && pwd);
+echo $ROOT_PATH;
+
 mkdir -p /tmp/iso
 cd /tmp/ubuntu
 [ -f initrd.gz ] || wget "http://archive.ubuntu.com/ubuntu/dists/trusty/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/initrd.gz"
@@ -16,12 +19,9 @@ default auto
 
 label auto
     kernel /linux
-    append auto=true preseed/file=/cdrom/apt.cfg keyboard-configuration/xkb-keymap=en priority=critical vga=788 initrd=/initrd.gz --- quiet
+    append auto=true preseed/file=/cdrom/ubuntu.cfg keyboard-configuration/xkb-keymap=en priority=critical vga=788 initrd=/initrd.gz --- quiet
 EOF
-mkdir -p /tmp/ubuntu
-wget "http://le9i0nx.github.io/debian-autoinstall/apt.cfg"
-wget "http://le9i0nx.github.io/debian-autoinstall/pve.cfg"
-wget "http://le9i0nx.github.io/debian-autoinstall/default.cfg"
+cp $ROOT_PATH/../*.cfg /tmp/iso
 
 cd ..
 genisoimage -r -V "ubuntu auto install" -cache-inodes -J -l -b isolinux.bin  -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ubuntu-lts-amd64-auto-install.iso iso/
