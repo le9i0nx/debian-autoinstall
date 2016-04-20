@@ -19,7 +19,7 @@ default auto
 
 label auto
     kernel /linux
-    append auto=true preseed/file=/cdrom/ubuntu.cfg keyboard-configuration/xkb-keymap=en priority=critical vga=788 initrd=/initrd.gz --- quiet
+    append auto=true ks=cdrom:/ks.cfg preseed/file=/cdrom/ubuntu.cfg keyboard-configuration/xkb-keymap=en priority=critical vga=788 initrd=/initrd.gz --- quiet
 EOF
 cp $ROOT_PATH/../*.cfg /tmp/iso
 
