@@ -21,7 +21,6 @@ label auto
     kernel /linux
     append auto=true url=http://le9i0nx.github.io/debian-autoinstall/ubuntu.cfg keyboard-configuration/xkb-keymap=en priority=critical vga=788 initrd=/initrd.gz --- quiet
 EOF
-#cp $ROOT_PATH/../*.cfg /tmp/iso
 
 cd ..
 genisoimage -r -V "ubuntu auto install" -cache-inodes -J -l -b isolinux.bin  -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ubuntu-lts-amd64-auto-install.iso iso/
