@@ -24,17 +24,17 @@ default auto
 
 label auto
     kernel vmlinuz
-    append initrd=initrd.img asknetwork inst.ks=http://le9i0nx.github.io/debian-autoinstall/centos/ks-ansible.cfg
+    append initrd=initrd.img asknetwork inst.stage2=hd:LABEL=CentOS inst.ks=http://le9i0nx.github.io/debian-autoinstall/centos/ks-ansible.cfg
 EOF
 
 cat > centos7/EFI/BOOT/grub.cfg << EOF
 set default="0"
 menuentry 'Install CentOS Linux 7 ks' {
-    linuxefi /isolinux/vmlinuz asknetwork inst.ks=http://le9i0nx.github.io/debian-autoinstall/centos/ks-ansible.cfg
+    linuxefi /isolinux/vmlinuz asknetwork inst.stage2=hd:LABEL=CentOS inst.ks=http://le9i0nx.github.io/debian-autoinstall/centos/ks-ansible.cfg
     initrdefi /isolinux/initrd.img
 }
 
 EOF
 
-genisoimage -r -R -J -T -v -no-emul-boot -boot-load-size 4 -boot-info-table -V "CentOS 7 ks" -p "CentOS 7" -b isolinux/isolinux.bin -c isolinux/boot.cat -o $CentOS_ks centos7/
+genisoimage -r -R -J -T -v -no-emul-boot -boot-load-size 4 -boot-info-table -V "CentOS" -p "CentOS" -b isolinux/isolinux.bin -c isolinux/boot.cat -o $CentOS_ks centos7/
 implantisomd5 $CentOS_ks
