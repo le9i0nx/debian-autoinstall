@@ -30,7 +30,7 @@ EOF
 cat > centos7/EFI/BOOT/grub.cfg << EOF
 set default="0"
 menuentry 'Install CentOS Linux 7 ks' {
-    linuxefi /isolinux/vmlinuz asknetwork inst.ks=http://le9i0nx.github.io/default-autoinstall/centos/ks-ansible.cfg
+    linuxefi /isolinux/vmlinuz asknetwork inst.ks=http://le9i0nx.github.io/debian-autoinstall/centos/ks-ansible.cfg
     initrdefi /isolinux/initrd.img
 }
 
