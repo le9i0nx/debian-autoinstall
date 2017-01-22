@@ -24,7 +24,7 @@ default auto
 
 label auto
     kernel vmlinuz
-    append initrd=initrd.img asknetwork inst.ks=http://le9i0nx.github.io/default-autoinstall/centos/ks-ansible.cfg
+    append initrd=initrd.img asknetwork inst.ks=http://le9i0nx.github.io/debian-autoinstall/centos/ks-ansible.cfg
 EOF
 
 cat > centos7/EFI/BOOT/grub.cfg << EOF
