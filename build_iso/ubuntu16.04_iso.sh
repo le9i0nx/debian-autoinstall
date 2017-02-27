@@ -19,8 +19,8 @@ timeout 0
 default auto
 
 label auto
-    kernel /linux 
-    append auto=true url=http://le9i0nx.github.io/debian-autoinstall/ubuntu.cfg keyboard-configuration/xkb-keymap=en priority=critical vga=788 initrd=/initrd.gz --- quiet
+    kernel /linux
+    append auto=true url=http://le9i0nx.github.io/debian-autoinstall/ubuntu.cfg interface=auto netcfg/dhcp_timeout=60 keyboard-configuration/xkb-keymap=en priority=critical vga=788 initrd=/initrd.gz --- quiet
 EOF
 
 cd ..
