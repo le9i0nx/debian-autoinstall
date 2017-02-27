@@ -3,8 +3,8 @@ ROOT_PATH=$(cd $(dirname $0) && pwd);
 echo $ROOT_PATH;
 
 mkdir -p /tmp/iso
-mkdir -p /tmp/ubuntu16.04
-cd /tmp/ubuntu16.04
+mkdir -p /tmp/ubuntu
+cd /tmp/ubuntu
 [ -f initrd.gz ] || wget "http://archive.ubuntu.com/ubuntu/dists/xenial/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/initrd.gz"
 [ -f firmware.cpio.gz ] || wget "http://cdimage.debian.org/cdimage/unofficial/non-free/firmware/stable/current/firmware.cpio.gz"
 cat initrd.gz firmware.cpio.gz > /tmp/iso/initrd.gz
@@ -26,3 +26,4 @@ EOF
 cd ..
 genisoimage -r -V "ubuntu auto install" -cache-inodes -J -l -b isolinux.bin  -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ubuntu-16.04-amd64-auto-install.iso iso/
 rm -r /tmp/iso
+rm -r /tmp/ubuntu
