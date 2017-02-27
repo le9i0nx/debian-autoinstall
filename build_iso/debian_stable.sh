@@ -1,6 +1,7 @@
 #!/bin/sh
 mkdir -p /tmp/iso
-cd /tmp/
+mkdir -p /tmp/debian
+cd /tmp/debian
 [ -f initrd.gz ] || wget "http://ftp.debian.org/debian/dists/stable/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz"
 [ -f firmware.cpio.gz ] || wget "http://cdimage.debian.org/cdimage/unofficial/non-free/firmware/stable/current/firmware.cpio.gz"
 cat initrd.gz firmware.cpio.gz > /tmp/iso/initrd.gz
@@ -19,4 +20,5 @@ label auto
 EOF
 cd ..
 genisoimage -r -V "debian auto install" -cache-inodes -J -l -b isolinux.bin  -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o debian-stable-amd64-auto-install.iso iso/
-
+rm -r /tmp/iso
+rm -r /tmp/debian
