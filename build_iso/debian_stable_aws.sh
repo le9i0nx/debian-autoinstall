@@ -5,7 +5,7 @@ cd /tmp/debian
 [ -f firmware.cpio.gz ] || wget "http://cdimage.debian.org/cdimage/unofficial/non-free/firmware/stable/current/firmware.cpio.gz"
 cat initrd.gz firmware.cpio.gz > /initrd.gz
 rm -r /tmp/debian
-cd /boot
+cd /
 [ -f linux ] || wget "http://ftp.debian.org/debian/dists/stable/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux"
 
 cat > /boot/grub/grub.cfg << EOF
