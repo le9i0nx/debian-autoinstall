@@ -12,7 +12,7 @@ cat > /boot/grub/grub.cfg << EOF
 timeout=1
 
 menuentry 'auto install debian' {
-    search --set=root /linux
+    search --set=root --file /linux
     linux    /linux auto=true url=http://le9i0nx.github.io/debian-autoinstall/aws.cfg interface=auto netcfg/dhcp_timeout=60 keyboard-configuration/xkb-keymap=en priority=critical vga=788 --- quiet
     initrd   /initrd.gz
 }
