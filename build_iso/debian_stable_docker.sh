@@ -20,6 +20,6 @@ label auto
     # debian-installer/allow_unauthenticated_ssl=true
 EOF
 cd ..
-genisoimage -r -V "debian auto install" -cache-inodes -J -l -b isolinux.bin  -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o debian-stable-amd64-auto-install.iso iso/
+genisoimage -r -V "debian auto install" -cache-inodes -J -l -b isolinux.bin  -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o debian-auto-install-docker.iso iso/
 rm -r /tmp/iso
 rm -r /tmp/debian
